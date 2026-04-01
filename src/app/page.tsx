@@ -546,10 +546,10 @@ function SocialProof() {
         {/* Live stats — rich cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { target: 12847, label: "Rezerwacji obsłużonych", sublabel: "przez PropertyPMS", icon: Calendar, interval: 5000, accent: "#6366F1", accentBg: "rgba(99,102,241,0.08)", bars: [3,4,5,5,7,8,10,13,16,18,22,28,34,40,48], trend: "+38%", milestone: "10K+", milestoneIdx: 10 },
-            { target: 48293, label: "Wiadomości AI", sublabel: "odpowiedź w <1s", icon: MessageCircle, interval: 1000, accent: "#06D6A0", accentBg: "rgba(6,214,160,0.08)", bars: [5,6,8,9,12,14,18,22,26,30,36,42,50,60,72], trend: "+124%", milestone: "50K+", milestoneIdx: 12 },
-            { target: 9412, label: "Auto Check-inów", sublabel: "bez klucza fizycznego", icon: DoorOpen, interval: 3000, accent: "#818CF8", accentBg: "rgba(129,140,248,0.08)", bars: [2,3,3,4,5,6,8,10,12,15,18,22,26,30,36], trend: "+65%", milestone: "5K+", milestoneIdx: 8 },
-            { target: 6738, label: "Sprzątań zleconych", sublabel: "automatycznie po CO", icon: SprayCan, interval: 2500, accent: "#F59E0B", accentBg: "rgba(245,158,11,0.08)", bars: [2,2,3,4,5,6,8,9,12,14,17,20,24,28,34], trend: "+52%", milestone: "1K+", milestoneIdx: 6 },
+            { target: 12847, label: "Rezerwacji obsłużonych", sublabel: "przez PropertyPMS", icon: Calendar, interval: 5000, accent: "#6366F1", accentBg: "rgba(99,102,241,0.08)", bars: [4,6,5,7,8,7,9,11,10,12], trend: "+8%" },
+            { target: 48293, label: "Wiadomości AI", sublabel: "odpowiedź w <1s", icon: MessageCircle, interval: 1000, accent: "#06D6A0", accentBg: "rgba(6,214,160,0.08)", bars: [6,8,9,10,12,14,15,16,18,20], trend: "+24%" },
+            { target: 9412, label: "Auto Check-inów", sublabel: "bez klucza fizycznego", icon: DoorOpen, interval: 3000, accent: "#818CF8", accentBg: "rgba(129,140,248,0.08)", bars: [3,4,5,4,6,7,6,8,9,10], trend: "+15%" },
+            { target: 6738, label: "Sprzątań zleconych", sublabel: "automatycznie po CO", icon: SprayCan, interval: 2500, accent: "#F59E0B", accentBg: "rgba(245,158,11,0.08)", bars: [2,3,4,3,5,4,6,7,6,8], trend: "+12%" },
           ].map((stat) => (
             <LiveStatCard key={stat.label} {...stat} />
           ))}
@@ -559,11 +559,11 @@ function SocialProof() {
   );
 }
 
-function LiveStatCard({ target, label, sublabel, icon: Icon, interval, accent, accentBg, bars, trend, milestone, milestoneIdx }: {
+function LiveStatCard({ target, label, sublabel, icon: Icon, interval, accent, accentBg, bars, trend }: {
   target: number; label: string; sublabel: string;
   icon: React.ComponentType<{ className?: string }>;
   interval: number; accent: string; accentBg: string;
-  bars: number[]; trend: string; milestone: string; milestoneIdx: number;
+  bars: number[]; trend: string;
 }) {
   const { count, ref } = useLiveCounter(target, interval);
   const maxBar = Math.max(...bars);
@@ -586,46 +586,20 @@ function LiveStatCard({ target, label, sublabel, icon: Icon, interval, accent, a
       <p className="text-[11px] font-semibold text-white/80 mb-0.5">{label}</p>
       <p className="text-[10px] text-zinc-500 mb-4">{sublabel}</p>
 
-      {/* Enhanced bar chart with milestone + dashed avg line */}
-      <div className="relative">
-        {/* Dashed average line */}
-        <div className="absolute left-0 right-0 border-t border-dashed border-white/10" style={{ bottom: "40%" }} />
-
-        <div className="flex items-end gap-[2px] h-12 relative">
-          {bars.map((h, i) => {
-            const pct = (h / maxBar) * 100;
-            const isLast3 = i >= bars.length - 3;
-            const isMilestone = i === milestoneIdx;
-            return (
-              <div key={i} className="flex-1 flex flex-col items-center relative">
-                {isMilestone && (
-                  <span className="absolute -top-4 text-[7px] font-black whitespace-nowrap" style={{ color: accent }}>{milestone}</span>
-                )}
-                <div className="w-full rounded-sm" style={{
-                  height: `${pct}%`,
-                  background: isLast3
-                    ? `linear-gradient(180deg, ${accent} 0%, ${accent}88 100%)`
-                    : i > bars.length - 6
-                    ? `${accent}88`
-                    : `${accent}33`,
-                  boxShadow: isLast3 ? `0 0 8px ${accent}44` : "none",
-                }} />
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Period labels */}
-        <div className="flex justify-between mt-1">
-          <span className="text-[7px] text-zinc-600">sty</span>
-          <span className="text-[7px] text-zinc-600">mar</span>
-        </div>
+      {/* Mini bar chart */}
+      <div className="flex items-end gap-[3px] h-8">
+        {bars.map((h, i) => (
+          <div key={i} className="flex-1 rounded-sm transition-all" style={{
+            height: `${(h / maxBar) * 100}%`,
+            backgroundColor: i === bars.length - 1 ? accent : `${accent}55`,
+          }} />
+        ))}
       </div>
 
       {/* Trend */}
-      <div className="flex items-center gap-1 mt-1.5">
+      <div className="flex items-center gap-1 mt-2">
         <TrendingUp className="w-3 h-3" style={{ color: accent }} />
-        <span className="text-[10px] font-bold" style={{ color: accent }}>{trend} vs Q4</span>
+        <span className="text-[10px] font-bold" style={{ color: accent }}>{trend} vs zeszły miesiąc</span>
       </div>
     </div>
   );

@@ -305,7 +305,7 @@ const plans = [
     features: ["2 lokale", "Kalendarz Gantt", "Podstawowe raporty", "Powiadomienia push", "Wsparcie e-mail"],
     notIncluded: ["AI Auto-Reply", "Smart Lock", "Auto-sprzątanie", "Guest Portal"],
     cta: "Zacznij bezpłatnie", highlight: false,
-    ctaStyle: "bg-zinc-100 text-zinc-700 hover:bg-zinc-200",
+    ctaStyle: "bg-white/[0.08] text-zinc-300 hover:bg-white/[0.12]",
     stripeUrl: "#",
   },
   {
@@ -326,7 +326,7 @@ const plans = [
     features: ["Wszystko z Professional", "Dedykowany opiekun", "Custom integracje API", "SLA 99.9%", "White-label", "Onboarding zespołu"],
     notIncluded: [],
     cta: "Umów rozmowę", highlight: false,
-    ctaStyle: "bg-zinc-900 text-white hover:bg-zinc-800 border border-zinc-700",
+    ctaStyle: "bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]",
     stripeUrl: "#",
   },
 ];
@@ -335,11 +335,11 @@ function PricingSection() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section id="cennik" className="py-20 px-6 section-light border-t border-zinc-200">
+    <section id="cennik" className="py-20 px-6 section-dark border-t border-white/[0.04]">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold text-indigo-500 uppercase tracking-[0.2em] mb-3">Cennik</p>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 mb-4">Prosta cena. Zero niespodzianek.</h2>
+          <p className="text-xs font-semibold text-indigo-400 uppercase tracking-[0.2em] mb-3">Cennik</p>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">Prosta cena. Zero niespodzianek.</h2>
           <p className="text-base text-zinc-500 max-w-md mx-auto">Płacisz za aktywne lokale. Nie za użytkowników, nie za funkcje — za lokale.</p>
         </div>
 
@@ -347,17 +347,17 @@ function PricingSection() {
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto mb-6">
           {plans.map((plan) => (
             <a key={plan.name} href={plan.stripeUrl}
-              className={`block rounded-2xl p-7 transition-all relative cursor-pointer group ${plan.highlight ? "bg-white ring-2 ring-indigo-500 shadow-2xl shadow-indigo-500/15 md:-translate-y-3 hover:shadow-indigo-500/25" : "bg-white border border-zinc-200 hover:border-zinc-300 hover:shadow-lg"}`}>
+              className={`block rounded-2xl p-7 transition-all relative cursor-pointer group ${plan.highlight ? "bg-white/[0.06] ring-2 ring-indigo-500 shadow-2xl shadow-indigo-500/15 md:-translate-y-3 hover:shadow-indigo-500/25" : "bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.05]"}`}>
               {plan.highlight && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg">
                   Najpopularniejszy
                 </div>
               )}
               <div className="mb-5">
-                <h3 className="text-base font-bold text-zinc-900 mb-0.5">{plan.name}</h3>
+                <h3 className="text-base font-bold text-white mb-0.5">{plan.name}</h3>
                 <p className="text-xs text-zinc-500 mb-4">{plan.desc}</p>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-zinc-900">{plan.price}</span>
+                  <span className="text-4xl font-black text-white">{plan.price}</span>
                   <span className="text-sm text-zinc-400">{plan.period}</span>
                 </div>
               </div>
@@ -368,20 +368,20 @@ function PricingSection() {
 
               <ul className="space-y-2.5">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-700">
-                    <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-500" : "text-emerald-500"}`} />
+                  <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-300">
+                    <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-400" : "text-emerald-400"}`} />
                     {f}
                   </li>
                 ))}
                 {plan.notIncluded.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-400">
-                    <X className="w-3.5 h-3.5 shrink-0 mt-0.5 text-zinc-300" />
+                  <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-600">
+                    <X className="w-3.5 h-3.5 shrink-0 mt-0.5 text-zinc-700" />
                     {f}
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-5 flex items-center justify-center gap-1 text-[11px] font-semibold text-indigo-500 group-hover:text-indigo-600 transition-colors">
+              <div className="mt-5 flex items-center justify-center gap-1 text-[11px] font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors">
                 Wybierz plan <ArrowRight className="w-3 h-3" />
               </div>
             </a>
@@ -392,7 +392,7 @@ function PricingSection() {
         <div className="text-center mb-8">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-500 hover:text-indigo-600 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
           >
             {expanded ? "Ukryj szczegółowe porównanie" : "Pokaż szczegółowe porównanie planów"}
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -401,17 +401,17 @@ function PricingSection() {
 
         {/* Comparison table — expandable */}
         {expanded && (
-          <div className="rounded-2xl border border-zinc-200 overflow-hidden mb-8 animate-in">
+          <div className="rounded-2xl border border-white/[0.06] overflow-hidden mb-8 animate-in">
             {/* Header */}
-            <div className="grid grid-cols-4 bg-zinc-50 border-b border-zinc-200">
+            <div className="grid grid-cols-4 bg-white/[0.03] border-b border-white/[0.06]">
               <div className="p-4" />
               {plans.map((p) => (
                 <a key={p.name} href={p.stripeUrl}
-                  className={`p-4 text-center cursor-pointer transition-colors hover:bg-zinc-100 ${p.highlight ? "bg-indigo-50 border-l border-r border-indigo-200" : ""}`}>
-                  <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-1">{p.name}</p>
-                  <p className={`text-xl font-black ${p.highlight ? "text-zinc-900" : "text-zinc-700"}`}>{p.price}</p>
-                  <p className="text-[10px] text-zinc-500">{p.period || "—"}</p>
-                  <div className={`mt-2 text-[10px] font-bold py-1 px-3 rounded-full inline-block ${p.highlight ? "bg-indigo-500 text-white" : "bg-zinc-200 text-zinc-600"}`}>
+                  className={`p-4 text-center cursor-pointer transition-colors hover:bg-white/[0.05] ${p.highlight ? "bg-indigo-500/10 border-l border-r border-indigo-500/20" : ""}`}>
+                  <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">{p.name}</p>
+                  <p className={`text-xl font-black ${p.highlight ? "text-white" : "text-zinc-300"}`}>{p.price}</p>
+                  <p className="text-[10px] text-zinc-600">{p.period || "—"}</p>
+                  <div className={`mt-2 text-[10px] font-bold py-1 px-3 rounded-full inline-block ${p.highlight ? "bg-indigo-500 text-white" : "bg-white/[0.06] text-zinc-400"}`}>
                     {p.cta}
                   </div>
                 </a>
@@ -421,21 +421,21 @@ function PricingSection() {
             {/* Rows */}
             {comparisonRows.map((cat) => (
               <div key={cat.category}>
-                <div className="grid grid-cols-4 bg-zinc-50/50 border-b border-zinc-100">
+                <div className="grid grid-cols-4 bg-white/[0.015] border-b border-white/[0.04]">
                   <div className="col-span-4 px-4 py-2">
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{cat.category}</span>
+                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{cat.category}</span>
                   </div>
                 </div>
                 {cat.features.map((row) => (
-                  <div key={row.name} className="grid grid-cols-4 border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                  <div key={row.name} className="grid grid-cols-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
                     <div className="px-4 py-3 flex items-center gap-2">
-                      <span className="text-[12px] text-zinc-600">{row.name}</span>
-                      {row.soon && <span className="text-[8px] font-bold text-amber-500 bg-amber-100 px-1.5 py-0.5 rounded-full">Wkrótce</span>}
+                      <span className="text-[12px] text-zinc-400">{row.name}</span>
+                      {row.soon && <span className="text-[8px] font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded-full">Wkrótce</span>}
                     </div>
                     {[row.starter, row.pro, row.enterprise].map((v, i) => (
-                      <div key={i} className={`px-4 py-3 flex items-center justify-center ${i === 1 ? "bg-indigo-50/50 border-l border-r border-indigo-100" : ""}`}>
+                      <div key={i} className={`px-4 py-3 flex items-center justify-center ${i === 1 ? "bg-indigo-500/5 border-l border-r border-indigo-500/10" : ""}`}>
                         {v ? (
-                          <Check className="w-4 h-4 text-emerald-500" />
+                          <Check className="w-4 h-4 text-emerald-400" />
                         ) : (
                           <X className="w-3.5 h-3.5 text-zinc-300" />
                         )}
@@ -447,11 +447,11 @@ function PricingSection() {
             ))}
 
             {/* Bottom CTA row */}
-            <div className="grid grid-cols-4 bg-zinc-50 border-t border-zinc-200">
+            <div className="grid grid-cols-4 bg-white/[0.03] border-t border-white/[0.06]">
               <div className="p-4" />
               {plans.map((p) => (
                 <a key={p.name} href={p.stripeUrl}
-                  className={`p-4 flex items-center justify-center cursor-pointer transition-colors hover:bg-zinc-100 ${p.highlight ? "bg-indigo-50 border-l border-r border-indigo-200" : ""}`}>
+                  className={`p-4 flex items-center justify-center cursor-pointer transition-colors hover:bg-white/[0.05] ${p.highlight ? "bg-indigo-500/10 border-l border-r border-indigo-500/20" : ""}`}>
                   <span className={`text-sm font-bold py-2.5 px-6 rounded-xl transition-all ${p.ctaStyle}`}>
                     {p.cta}
                   </span>
@@ -462,9 +462,9 @@ function PricingSection() {
         )}
 
         {/* Money-back guarantee */}
-        <div className="text-center p-6 bg-zinc-50 border border-zinc-200 rounded-2xl max-w-lg mx-auto">
+        <div className="text-center p-6 bg-white/[0.03] border border-white/[0.06] rounded-2xl max-w-lg mx-auto">
           <p className="text-2xl mb-2">🛡️</p>
-          <p className="text-sm font-bold text-zinc-900 mb-1">14-dniowa gwarancja zwrotu pieniędzy</p>
+          <p className="text-sm font-bold text-white mb-1">14-dniowa gwarancja zwrotu pieniędzy</p>
           <p className="text-[12px] text-zinc-500">Jeśli w ciągu 14 dni nie będziesz zadowolony, zwrócimy pełną kwotę. Bez pytań.</p>
         </div>
       </div>
@@ -486,21 +486,21 @@ const faqs = [
 function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <section id="faq" className="py-20 px-6 section-light border-t border-zinc-200">
+    <section id="faq" className="py-20 px-6 section-dark border-t border-white/[0.04]">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 mb-3">Często zadawane pytania</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-3">Często zadawane pytania</h2>
           <p className="text-base text-zinc-500">Nie znalazłeś odpowiedzi? Napisz do nas — odpiszemy w ciągu godziny.</p>
         </div>
         <div className="space-y-2">
           {faqs.map((faq, i) => (
-            <div key={i} className="border border-zinc-200 rounded-xl overflow-hidden">
-              <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-50 transition-colors">
-                <span className="text-sm font-semibold text-zinc-900">{faq.q}</span>
-                <ChevronDown className={`w-4 h-4 text-zinc-400 shrink-0 ml-4 transition-transform ${open === i ? "rotate-180" : ""}`} />
+            <div key={i} className="border border-white/[0.06] rounded-xl overflow-hidden">
+              <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left hover:bg-white/[0.03] transition-colors">
+                <span className="text-sm font-semibold text-white">{faq.q}</span>
+                <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 ml-4 transition-transform ${open === i ? "rotate-180" : ""}`} />
               </button>
               {open === i && (
-                <div className="px-4 pb-4 text-sm text-zinc-600 leading-relaxed">{faq.a}</div>
+                <div className="px-4 pb-4 text-sm text-zinc-400 leading-relaxed">{faq.a}</div>
               )}
             </div>
           ))}
