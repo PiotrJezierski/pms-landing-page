@@ -296,7 +296,11 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > window.innerHeight * 3.5);
+    const introSeen = sessionStorage.getItem("intro_seen") === "1";
+    // If intro was skipped, show navbar after scrolling past the static hero (1 screen)
+    // If intro is playing, show after the full scrollytelling animation (3.5 screens)
+    const threshold = introSeen ? window.innerHeight * 0.5 : window.innerHeight * 3.5;
+    const onScroll = () => setVisible(window.scrollY > threshold);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -306,7 +310,8 @@ function Navbar() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}>
         <div className="glass mx-4 mt-3 rounded-2xl">
           <div className="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2"
+              onDoubleClick={(e) => { e.preventDefault(); sessionStorage.removeItem("intro_seen"); window.scrollTo(0, 0); window.location.reload(); }}>
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-400 flex items-center justify-center">
                 <Building2 className="w-4 h-4 text-white" strokeWidth={2} />
               </div>
