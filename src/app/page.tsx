@@ -233,46 +233,16 @@ function ScrollytellingIntro() {
           </div>
         </div>
 
-        {/* ── Phase 4: Sphere left + Action Cards right ── */}
-        <div className="absolute inset-0 z-10"
+        {/* ── Phase 4: Text only ── */}
+        <div className="absolute inset-0 flex items-center justify-center z-10"
           style={{
             opacity: phase === 4 ? p4 : phase === 5 ? 1 - p5 * 2 : 0,
             pointerEvents: "none",
           }}>
-          {/* Cards - centered layout */}
-          <div className="absolute inset-0 flex items-center justify-center pb-20">
-            <div className="flex flex-col gap-3 w-full max-w-md px-6">
-              {[
-                { icon: MessageCircle, color: "#6366F1", title: "AI Auto-Reply", detail: "Guest: What time is check-in?", sub: "AI: 3 PM. Parking at ul. Marszałkowska 12. ✓", delay: 0.1 },
-                { icon: Lock, color: "#06D6A0", title: "Smart Lock", detail: "Kod 4521 wysłany", sub: "Apt. Centrum · Aktywny", delay: 0.25 },
-                { icon: SprayCan, color: "#F59E0B", title: "Auto-Cleaning", detail: "Sprzątanie · Apt. Centrum", sub: "W trakcie — 60%", delay: 0.4 },
-              ].map((card, i) => {
-                const cardProgress = Math.max(0, (p4 - card.delay) / (1 - card.delay));
-                return (
-                  <div key={i} className="glass rounded-2xl p-4"
-                    style={{
-                      opacity: Math.min(1, cardProgress * 3),
-                      transform: `translateX(${(1 - Math.min(1, cardProgress * 2)) * 60}px)`,
-                    }}>
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <card.icon className="w-4 h-4" style={{ color: card.color }} />
-                      <span className="text-xs font-semibold text-zinc-400">{card.title}</span>
-                    </div>
-                    <p className="text-sm font-medium text-white mb-0.5">{card.detail}</p>
-                    <p className="text-xs text-zinc-500">{card.sub}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Phase 4 bottom text — keep inside phase 4 container */}
-          <div className="absolute bottom-16 left-0 right-0 text-center">
-            <h2 className="text-2xl md:text-5xl font-black tracking-tight text-white"
-              style={{ opacity: Math.min(1, p4 * 2) * (1 - Math.max(0, (p4 - 0.85) / 0.15)) }}>
-              Wszystko dzieje się <span className="gradient-text">samo.</span>
-            </h2>
-          </div>
+          <h2 className="text-3xl md:text-6xl font-black tracking-tight text-white text-center px-6"
+            style={{ opacity: Math.min(1, p4 * 2) * (1 - Math.max(0, (p4 - 0.85) / 0.15)) }}>
+            Wszystko dzieje się<br /><span className="gradient-text">samo.</span>
+          </h2>
         </div>
 
         {/* ── Phase 5: Empire / Buildings ── */}
