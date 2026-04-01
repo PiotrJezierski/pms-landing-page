@@ -333,25 +333,19 @@ const plans = [
 
 function PricingSection() {
   const [expanded, setExpanded] = useState(false);
-  const tableRef = useRef<HTMLDivElement>(null);
+  const rowsRef = useRef<HTMLDivElement>(null);
 
   const toggle = () => {
-    if (!tableRef.current) return;
+    if (!rowsRef.current) return;
     if (expanded) {
-      // Collapse: animate from current height to 0
-      const h = tableRef.current.scrollHeight;
-      tableRef.current.style.maxHeight = `${h}px`;
-      requestAnimationFrame(() => {
-        if (tableRef.current) tableRef.current.style.maxHeight = "0px";
-      });
+      const h = rowsRef.current.scrollHeight;
+      rowsRef.current.style.maxHeight = `${h}px`;
+      requestAnimationFrame(() => { if (rowsRef.current) rowsRef.current.style.maxHeight = "0px"; });
       setExpanded(false);
     } else {
-      // Expand: set max-height to scrollHeight for animation
       setExpanded(true);
       requestAnimationFrame(() => {
-        if (tableRef.current) {
-          tableRef.current.style.maxHeight = `${tableRef.current.scrollHeight}px`;
-        }
+        if (rowsRef.current) rowsRef.current.style.maxHeight = `${rowsRef.current.scrollHeight}px`;
       });
     }
   };
@@ -365,86 +359,62 @@ function PricingSection() {
           <p className="text-base text-zinc-500 max-w-md mx-auto">Płacisz za aktywne lokale. Nie za użytkowników, nie za funkcje — za lokale.</p>
         </div>
 
-        {/* Pricing cards */}
-        <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto mb-6">
-          {plans.map((plan) => (
-            <a key={plan.name} href={plan.stripeUrl}
-              className={`block rounded-2xl p-7 transition-all relative cursor-pointer group ${plan.highlight ? "bg-white/[0.06] ring-2 ring-indigo-500 shadow-2xl shadow-indigo-500/15 md:-translate-y-3 hover:shadow-indigo-500/25" : "bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.05]"}`}>
-              {plan.highlight && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg">
-                  Najpopularniejszy
-                </div>
-              )}
-              <div className="mb-5">
-                <h3 className="text-base font-bold text-white mb-0.5">{plan.name}</h3>
-                <p className="text-xs text-zinc-500 mb-4">{plan.desc}</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white">{plan.price}</span>
+        {/* Single morphing container: cards → table */}
+        <div className={`rounded-2xl border border-white/[0.06] overflow-hidden transition-all duration-500 ${expanded ? "bg-white/[0.02]" : ""}`}>
+
+          {/* Plan headers — always visible, morph from cards to table columns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 transition-all duration-500">
+            {plans.map((plan) => (
+              <div key={plan.name}
+                className={`relative transition-all duration-500 ${
+                  expanded
+                    ? `p-5 text-center ${plan.highlight ? "bg-indigo-500/10 border-b border-indigo-500/20" : "border-b border-white/[0.04]"}`
+                    : `p-7 ${plan.highlight ? "bg-white/[0.06]" : "bg-white/[0.03]"} ${!expanded ? "border-b md:border-b-0 md:border-r border-white/[0.04] last:border-r-0" : ""}`
+                }`}>
+                {plan.highlight && !expanded && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg z-10">
+                    Najpopularniejszy
+                  </div>
+                )}
+
+                <h3 className={`font-bold text-white transition-all duration-500 ${expanded ? "text-sm mb-1" : "text-base mb-0.5"}`}>{plan.name}</h3>
+                <p className={`text-xs text-zinc-500 transition-all duration-500 ${expanded ? "mb-2" : "mb-4"}`}>{plan.desc}</p>
+                <div className="flex items-baseline gap-1 justify-center md:justify-start transition-all duration-500" style={{ justifyContent: expanded ? "center" : undefined }}>
+                  <span className={`font-black text-white transition-all duration-500 ${expanded ? "text-2xl" : "text-4xl"}`}>{plan.price}</span>
                   <span className="text-sm text-zinc-400">{plan.period}</span>
                 </div>
-              </div>
 
-              <div className={`block text-center font-bold text-sm py-3 rounded-xl transition-all mb-6 ${plan.ctaStyle}`}>
-                {plan.cta}
-              </div>
-
-              <ul className="space-y-2.5">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-300">
-                    <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-400" : "text-emerald-400"}`} />
-                    {f}
-                  </li>
-                ))}
-                {plan.notIncluded.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-600">
-                    <X className="w-3.5 h-3.5 shrink-0 mt-0.5 text-zinc-700" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-5 flex items-center justify-center gap-1 text-[11px] font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors">
-                Wybierz plan <ArrowRight className="w-3 h-3" />
-              </div>
-            </a>
-          ))}
-        </div>
-
-        {/* Expand/Collapse comparison */}
-        <div className="text-center mb-8">
-          <button
-            onClick={toggle}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
-          >
-            {expanded ? "Ukryj szczegółowe porównanie" : "Pokaż szczegółowe porównanie planów"}
-            <ChevronDown className={`w-4 h-4 transition-transform duration-500 ${expanded ? "rotate-180" : ""}`} />
-          </button>
-        </div>
-
-        {/* Comparison table — animated expand/collapse */}
-        <div
-          ref={tableRef}
-          className="overflow-hidden transition-[max-height] duration-700 ease-in-out"
-          style={{ maxHeight: 0 }}
-        >
-          <div className="rounded-2xl border border-white/[0.06] overflow-hidden mb-8">
-            {/* Header */}
-            <div className="grid grid-cols-4 bg-white/[0.03] border-b border-white/[0.06]">
-              <div className="p-4" />
-              {plans.map((p) => (
-                <a key={p.name} href={p.stripeUrl}
-                  className={`p-4 text-center cursor-pointer transition-colors hover:bg-white/[0.05] ${p.highlight ? "bg-indigo-500/10 border-l border-r border-indigo-500/20" : ""}`}>
-                  <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">{p.name}</p>
-                  <p className={`text-xl font-black ${p.highlight ? "text-white" : "text-zinc-300"}`}>{p.price}</p>
-                  <p className="text-[10px] text-zinc-600">{p.period || "—"}</p>
-                  <div className={`mt-2 text-[10px] font-bold py-1 px-3 rounded-full inline-block ${p.highlight ? "bg-indigo-500 text-white" : "bg-white/[0.06] text-zinc-400"}`}>
-                    {p.cta}
-                  </div>
+                <a href={plan.stripeUrl} className={`block text-center font-bold text-sm py-2.5 rounded-xl transition-all duration-500 mt-4 ${plan.ctaStyle}`}>
+                  {plan.cta}
                 </a>
-              ))}
-            </div>
 
-            {/* Rows */}
+                {/* Feature list — visible only when collapsed */}
+                <div className={`transition-all duration-500 overflow-hidden ${expanded ? "max-h-0 opacity-0 mt-0" : "max-h-[600px] opacity-100 mt-5"}`}>
+                  <ul className="space-y-2.5">
+                    {plan.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-300">
+                        <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-400" : "text-emerald-400"}`} />
+                        {f}
+                      </li>
+                    ))}
+                    {plan.notIncluded.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-600">
+                        <X className="w-3.5 h-3.5 shrink-0 mt-0.5 text-zinc-700" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Comparison rows — animate in below the headers */}
+          <div
+            ref={rowsRef}
+            className="overflow-hidden transition-[max-height] duration-700 ease-in-out"
+            style={{ maxHeight: 0 }}
+          >
             {comparisonRows.map((cat) => (
               <div key={cat.category}>
                 <div className="grid grid-cols-4 bg-white/[0.015] border-b border-white/[0.04]">
@@ -460,31 +430,23 @@ function PricingSection() {
                     </div>
                     {[row.starter, row.pro, row.enterprise].map((v, i) => (
                       <div key={i} className={`px-4 py-3 flex items-center justify-center ${i === 1 ? "bg-indigo-500/5 border-l border-r border-indigo-500/10" : ""}`}>
-                        {v ? (
-                          <Check className="w-4 h-4 text-emerald-400" />
-                        ) : (
-                          <X className="w-3.5 h-3.5 text-zinc-300" />
-                        )}
+                        {v ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-3.5 h-3.5 text-zinc-700" />}
                       </div>
                     ))}
                   </div>
                 ))}
               </div>
             ))}
-
-            {/* Bottom CTA row */}
-            <div className="grid grid-cols-4 bg-white/[0.03] border-t border-white/[0.06]">
-              <div className="p-4" />
-              {plans.map((p) => (
-                <a key={p.name} href={p.stripeUrl}
-                  className={`p-4 flex items-center justify-center cursor-pointer transition-colors hover:bg-white/[0.05] ${p.highlight ? "bg-indigo-500/10 border-l border-r border-indigo-500/20" : ""}`}>
-                  <span className={`text-sm font-bold py-2.5 px-6 rounded-xl transition-all ${p.ctaStyle}`}>
-                    {p.cta}
-                  </span>
-                </a>
-              ))}
-            </div>
           </div>
+        </div>
+
+        {/* Toggle button */}
+        <div className="text-center mt-6 mb-8">
+          <button onClick={toggle}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+            {expanded ? "Zwiń do kart cennikowych" : "Rozwiń pełne porównanie planów"}
+            <ChevronDown className={`w-4 h-4 transition-transform duration-500 ${expanded ? "rotate-180" : ""}`} />
+          </button>
         </div>
 
         {/* Money-back guarantee */}
