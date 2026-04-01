@@ -338,11 +338,14 @@ function PricingSection() {
   const toggle = () => {
     if (!rowsRef.current) return;
     if (expanded) {
+      // Collapse table
       const h = rowsRef.current.scrollHeight;
       rowsRef.current.style.maxHeight = `${h}px`;
       requestAnimationFrame(() => { if (rowsRef.current) rowsRef.current.style.maxHeight = "0px"; });
-      setExpanded(false);
+      // Delay showing cards until table collapses
+      setTimeout(() => setExpanded(false), 100);
     } else {
+      // Hide cards, expand table
       setExpanded(true);
       requestAnimationFrame(() => {
         if (rowsRef.current) rowsRef.current.style.maxHeight = `${rowsRef.current.scrollHeight}px`;
@@ -359,68 +362,76 @@ function PricingSection() {
           <p className="text-base text-zinc-500 max-w-md mx-auto">Płacisz za aktywne lokale. Nie za użytkowników, nie za funkcje — za lokale.</p>
         </div>
 
-        {/* Single morphing container: cards → table */}
-        <div className="rounded-2xl border border-white/[0.06] transition-all duration-500">
-
-          {/* Plan headers — always visible, morph from cards to table columns */}
-          <div className={`grid grid-cols-1 md:grid-cols-3 transition-all duration-500 ${expanded ? "" : "gap-0"}`}>
-            {plans.map((plan, idx) => (
+        {/* Collapsed: 3 pricing cards */}
+        <div className={`transition-all duration-500 ${expanded ? "max-h-0 opacity-0 overflow-hidden" : "max-h-[3000px] opacity-100"}`}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            {plans.map((plan) => (
               <div key={plan.name}
-                className={`relative transition-all duration-500 ${
-                  expanded
-                    ? `p-4 md:p-5 text-center ${plan.highlight ? "bg-indigo-500/10" : ""} ${idx < 2 ? "border-b md:border-b-0 md:border-r border-white/[0.06]" : ""}`
-                    : `p-6 md:p-7 ${plan.highlight ? "bg-white/[0.06]" : "bg-white/[0.03]"} ${idx < 2 ? "border-b md:border-b-0 md:border-r border-white/[0.06]" : ""}`
-                }`}>
-                {/* Badge — inside the card with margin, not absolute */}
-                {plan.highlight && !expanded && (
+                className={`rounded-2xl p-6 md:p-7 transition-all relative ${plan.highlight ? "bg-white/[0.06] ring-2 ring-indigo-500 shadow-2xl shadow-indigo-500/15 md:-translate-y-2" : "bg-white/[0.03] border border-white/[0.06]"}`}>
+                {plan.highlight && (
                   <div className="flex justify-center mb-4 -mt-1">
                     <span className="bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg">
                       Najpopularniejszy
                     </span>
                   </div>
                 )}
-
-                <h3 className={`font-bold text-white transition-all duration-500 ${expanded ? "text-sm mb-1" : "text-base mb-0.5"}`}>{plan.name}</h3>
-                <p className={`text-xs text-zinc-500 transition-all duration-500 ${expanded ? "hidden md:block mb-1" : "mb-3"}`}>{plan.desc}</p>
-                <div className={`flex items-baseline gap-1 transition-all duration-500 ${expanded ? "justify-center" : "justify-center md:justify-start"}`}>
-                  <span className={`font-black text-white transition-all duration-500 ${expanded ? "text-xl md:text-2xl" : "text-3xl md:text-4xl"}`}>{plan.price}</span>
+                <h3 className="text-base font-bold text-white mb-0.5">{plan.name}</h3>
+                <p className="text-xs text-zinc-500 mb-3">{plan.desc}</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl md:text-4xl font-black text-white">{plan.price}</span>
                   <span className="text-sm text-zinc-400">{plan.period}</span>
                 </div>
-
-                <a href={plan.stripeUrl} className={`block text-center font-bold text-sm py-2.5 rounded-xl transition-all duration-500 mt-3 ${plan.ctaStyle}`}>
+                <a href={plan.stripeUrl} className={`block text-center font-bold text-sm py-2.5 rounded-xl mt-4 ${plan.ctaStyle}`}>
                   {plan.cta}
                 </a>
-
-                {/* Feature list — visible only when collapsed */}
-                <div className={`transition-all duration-500 overflow-hidden ${expanded ? "max-h-0 opacity-0 mt-0" : "max-h-[600px] opacity-100 mt-5"}`}>
-                  <ul className="space-y-2">
-                    {plan.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-300">
-                        <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-400" : "text-emerald-400"}`} />
-                        {f}
-                      </li>
-                    ))}
-                    {plan.notIncluded.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-600">
-                        <X className="w-3.5 h-3.5 shrink-0 mt-0.5 text-zinc-700" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ul className="space-y-2 mt-5">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-300">
+                      <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-400" : "text-emerald-400"}`} />
+                      {f}
+                    </li>
+                  ))}
+                  {plan.notIncluded.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-600">
+                      <X className="w-3.5 h-3.5 shrink-0 mt-0.5 text-zinc-700" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Comparison rows — animate in below the headers */}
-          <div
-            ref={rowsRef}
-            className="overflow-hidden transition-[max-height] duration-700 ease-in-out"
-            style={{ maxHeight: 0 }}
-          >
-            {/* Mobile: scrollable table */}
+        {/* Expanded: full comparison table with plan headers aligned to columns */}
+        <div
+          ref={rowsRef}
+          className="overflow-hidden transition-[max-height] duration-700 ease-in-out"
+          style={{ maxHeight: 0 }}
+        >
+          <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
+            {/* Scrollable on mobile */}
             <div className="overflow-x-auto">
-              <div className="min-w-[600px]">
+              <div className="min-w-[640px]">
+                {/* Table header = plan cards as columns */}
+                <div className="grid grid-cols-4 border-b border-white/[0.06]">
+                  <div className="p-4" />
+                  {plans.map((p) => (
+                    <div key={p.name} className={`p-4 md:p-5 text-center ${p.highlight ? "bg-indigo-500/10" : "bg-white/[0.02]"}`}>
+                      <h3 className="text-sm font-bold text-white mb-1">{p.name}</h3>
+                      <p className="text-[10px] text-zinc-500 mb-2 hidden md:block">{p.desc}</p>
+                      <div className="flex items-baseline gap-1 justify-center">
+                        <span className={`text-xl md:text-2xl font-black text-white`}>{p.price}</span>
+                        <span className="text-xs text-zinc-400">{p.period}</span>
+                      </div>
+                      <a href={p.stripeUrl} className={`block text-center font-bold text-[11px] md:text-sm py-2 md:py-2.5 rounded-xl mt-3 ${p.ctaStyle}`}>
+                        {p.cta}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Comparison rows */}
                 {comparisonRows.map((cat) => (
                   <div key={cat.category}>
                     <div className="grid grid-cols-4 bg-white/[0.015] border-b border-white/[0.04]">
