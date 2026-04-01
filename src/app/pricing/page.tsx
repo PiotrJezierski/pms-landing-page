@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Building2, ArrowLeft, Check, X, Star, ChevronDown, ChevronUp,
   Bot, Lock, SprayCan, Calendar, MessageCircle,
@@ -333,6 +333,28 @@ const plans = [
 
 function PricingSection() {
   const [expanded, setExpanded] = useState(false);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const toggle = () => {
+    if (!tableRef.current) return;
+    if (expanded) {
+      // Collapse: animate from current height to 0
+      const h = tableRef.current.scrollHeight;
+      tableRef.current.style.maxHeight = `${h}px`;
+      requestAnimationFrame(() => {
+        if (tableRef.current) tableRef.current.style.maxHeight = "0px";
+      });
+      setExpanded(false);
+    } else {
+      // Expand: set max-height to scrollHeight for animation
+      setExpanded(true);
+      requestAnimationFrame(() => {
+        if (tableRef.current) {
+          tableRef.current.style.maxHeight = `${tableRef.current.scrollHeight}px`;
+        }
+      });
+    }
+  };
 
   return (
     <section id="cennik" className="py-20 px-6 section-dark border-t border-white/[0.04]">
@@ -391,17 +413,21 @@ function PricingSection() {
         {/* Expand/Collapse comparison */}
         <div className="text-center mb-8">
           <button
-            onClick={() => setExpanded(!expanded)}
+            onClick={toggle}
             className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
           >
             {expanded ? "Ukryj szczegółowe porównanie" : "Pokaż szczegółowe porównanie planów"}
-            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <ChevronDown className={`w-4 h-4 transition-transform duration-500 ${expanded ? "rotate-180" : ""}`} />
           </button>
         </div>
 
-        {/* Comparison table — expandable */}
-        {expanded && (
-          <div className="rounded-2xl border border-white/[0.06] overflow-hidden mb-8 animate-in">
+        {/* Comparison table — animated expand/collapse */}
+        <div
+          ref={tableRef}
+          className="overflow-hidden transition-[max-height] duration-700 ease-in-out"
+          style={{ maxHeight: 0 }}
+        >
+          <div className="rounded-2xl border border-white/[0.06] overflow-hidden mb-8">
             {/* Header */}
             <div className="grid grid-cols-4 bg-white/[0.03] border-b border-white/[0.06]">
               <div className="p-4" />
@@ -459,7 +485,7 @@ function PricingSection() {
               ))}
             </div>
           </div>
-        )}
+        </div>
 
         {/* Money-back guarantee */}
         <div className="text-center p-6 bg-white/[0.03] border border-white/[0.06] rounded-2xl max-w-lg mx-auto">
