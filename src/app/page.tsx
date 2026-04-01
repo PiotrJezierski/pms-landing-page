@@ -88,7 +88,14 @@ function ScrollytellingIntro() {
         <div className="absolute w-[500px] h-[500px] rounded-full blur-[150px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(6,214,160,0.18) 0%, transparent 70%)", bottom: "0%", right: "35%", animation: "mesh-move 25s ease-in-out infinite reverse" }} />
         <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-end pointer-events-none">
           {buildings.map((b, i) => (
-            <div key={i} className="absolute bottom-0 rounded-t-sm" style={{ left: b.left, width: b.width, height: b.height, background: b.glow ? "linear-gradient(180deg, rgba(99,102,241,0.6), rgba(99,102,241,0.15))" : "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))", boxShadow: b.glow ? "0 0 30px rgba(99,102,241,0.3)" : "none" }} />
+            <div key={i} className="absolute bottom-0 rounded-t-md" style={{
+              left: b.left, width: b.width, height: b.height,
+              background: b.glow
+                ? "linear-gradient(180deg, #818CF8 0%, #6366F1 40%, rgba(99,102,241,0.2) 100%)"
+                : "linear-gradient(180deg, rgba(148,163,184,0.12) 0%, rgba(255,255,255,0.03) 100%)",
+              boxShadow: b.glow ? "0 0 40px rgba(99,102,241,0.5), 0 0 80px rgba(99,102,241,0.2), inset 0 1px 0 rgba(255,255,255,0.2)" : "inset 0 1px 0 rgba(255,255,255,0.05)",
+              border: b.glow ? "1px solid rgba(129,140,248,0.4)" : "1px solid rgba(255,255,255,0.06)",
+            }} />
           ))}
         </div>
         <h2 className="text-4xl md:text-7xl font-black tracking-tight text-white text-center relative z-10">
@@ -166,7 +173,7 @@ function ScrollytellingIntro() {
             willChange: "transform, opacity",
           }}>
           <h2 className="text-5xl md:text-8xl font-black tracking-tight text-white text-center leading-none">
-            Command<br /><span className="gradient-text">the City.</span>
+            Command<br /><span className="gradient-text">the Properties.</span>
           </h2>
         </div>
 
@@ -270,15 +277,16 @@ function ScrollytellingIntro() {
           {/* Buildings */}
           <div className="absolute bottom-0 left-0 right-0 h-[60%] flex items-end pointer-events-none">
             {buildings.map((b, i) => (
-              <div key={i} className="absolute bottom-0 rounded-t-sm transition-all"
+              <div key={i} className="absolute bottom-0 rounded-t-md transition-all"
                 style={{
                   left: b.left,
                   width: b.width,
                   height: `calc(${b.height} * ${Math.min(1, p5 * 2)})`,
                   background: b.glow
-                    ? "linear-gradient(180deg, rgba(99,102,241,0.6), rgba(99,102,241,0.15))"
-                    : "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-                  boxShadow: b.glow ? "0 0 30px rgba(99,102,241,0.3)" : "none",
+                    ? "linear-gradient(180deg, #818CF8 0%, #6366F1 40%, rgba(99,102,241,0.2) 100%)"
+                    : "linear-gradient(180deg, rgba(148,163,184,0.12) 0%, rgba(255,255,255,0.03) 100%)",
+                  boxShadow: b.glow ? "0 0 40px rgba(99,102,241,0.5), 0 0 80px rgba(99,102,241,0.2), inset 0 1px 0 rgba(255,255,255,0.2)" : "inset 0 1px 0 rgba(255,255,255,0.05)",
+                  border: b.glow ? "1px solid rgba(129,140,248,0.4)" : "1px solid rgba(255,255,255,0.06)",
                   transitionDelay: b.delay,
                   transitionDuration: "0.8s",
                 }}
