@@ -203,20 +203,17 @@ function ScrollytellingIntro() {
         {/* ── Phase 3: AI Sphere ── */}
         <div className="absolute inset-0 flex items-center justify-center z-10"
           style={{
-            opacity: phase === 3 ? p3 : phase === 4 ? 1 - p4 * 0.3 : 0,
+            opacity: phase === 3 ? p3 : phase === 4 ? Math.max(0, 1 - p4 * 4) : 0,
+            pointerEvents: "none",
           }}>
-          <div className="relative" style={{
-            transform: phase === 4 ? `translateX(${-p4 * 35}vw) scale(${1 - p4 * 0.5})` : "none",
-            transition: "transform 0.1s linear",
-          }}>
+          <div className="relative">
             {/* Sphere */}
             <div className="w-32 h-32 md:w-48 md:h-48 rounded-full mx-auto mb-8 relative"
               style={{
                 background: "radial-gradient(circle at 35% 35%, #818CF8, #6366F1 40%, #06D6A0 100%)",
-                boxShadow: `0 0 ${60 + Math.sin(Date.now() / 1000) * 20}px rgba(99,102,241,0.4), 0 0 120px rgba(6,214,160,0.2)`,
+                boxShadow: "0 0 60px rgba(99,102,241,0.4), 0 0 120px rgba(6,214,160,0.2)",
                 animation: "float 6s ease-in-out infinite",
               }}>
-              {/* Orbiting dots */}
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className="absolute w-2 h-2 bg-white rounded-full"
                   style={{
@@ -230,46 +227,52 @@ function ScrollytellingIntro() {
               ))}
             </div>
             <h2 className="text-3xl md:text-6xl font-black tracking-tight text-white text-center"
-              style={{ opacity: phase === 3 ? Math.min(1, p3 / 0.3) : phase === 4 ? 1 - p4 : 0 }}>
+              style={{ opacity: phase === 3 ? Math.min(1, p3 / 0.3) : 0 }}>
               AI. Które zarządza<br /><span className="gradient-text">za Ciebie.</span>
             </h2>
           </div>
         </div>
 
-        {/* ── Phase 4: Floating Action Cards ── */}
-        <div className="absolute inset-0 flex items-center justify-end z-10 pr-[5%] md:pr-[10%]"
-          style={{ opacity: phase === 4 ? p4 : phase === 5 ? 1 - p5 : 0 }}>
-          <div className="flex flex-col gap-4 max-w-xs w-full">
-            {[
-              { icon: MessageCircle, color: "indigo", title: "AI Auto-Reply", detail: "Guest: What time is check-in?", sub: "AI: 3 PM. Parking at ul. Marszałkowska 12. ✓", delay: 0 },
-              { icon: Lock, color: "emerald", title: "Smart Lock", detail: "Kod 4521 wysłany", sub: "Apt. Centrum · Aktywny", delay: 0.15 },
-              { icon: SprayCan, color: "amber", title: "Auto-Cleaning", detail: "Sprzątanie · Apt. Centrum", sub: "W trakcie — 60%", delay: 0.3 },
-            ].map((card, i) => (
-              <div key={i} className="glass rounded-2xl p-4 transition-all"
-                style={{
-                  opacity: p4 > card.delay + 0.1 ? 1 : 0,
-                  transform: `translateX(${p4 > card.delay + 0.1 ? 0 : 40}px)`,
-                  transition: `all 0.5s ease-out ${card.delay}s`,
-                }}>
-                <div className="flex items-center gap-2.5 mb-2">
-                  <card.icon className={`w-4 h-4 text-${card.color}-400`} />
-                  <span className="text-xs font-semibold text-zinc-400">{card.title}</span>
-                </div>
-                <p className="text-sm font-medium text-white mb-0.5">{card.detail}</p>
-                <p className="text-xs text-zinc-500">{card.sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Phase 4 Text ── */}
-        <div className="absolute bottom-20 left-0 right-0 text-center z-10"
+        {/* ── Phase 4: Sphere left + Action Cards right ── */}
+        <div className="absolute inset-0 z-10"
           style={{
-            opacity: phase === 4 ? Math.min(1, p4 / 0.3) * (1 - Math.max(0, (p4 - 0.8) / 0.2)) : 0,
+            opacity: phase === 4 ? p4 : phase === 5 ? 1 - p5 * 2 : 0,
+            pointerEvents: "none",
           }}>
-          <h2 className="text-2xl md:text-5xl font-black tracking-tight text-white">
-            Wszystko dzieje się <span className="gradient-text">samo.</span>
-          </h2>
+          {/* Cards - centered layout */}
+          <div className="absolute inset-0 flex items-center justify-center pb-20">
+            <div className="flex flex-col gap-3 w-full max-w-md px-6">
+              {[
+                { icon: MessageCircle, color: "#6366F1", title: "AI Auto-Reply", detail: "Guest: What time is check-in?", sub: "AI: 3 PM. Parking at ul. Marszałkowska 12. ✓", delay: 0.1 },
+                { icon: Lock, color: "#06D6A0", title: "Smart Lock", detail: "Kod 4521 wysłany", sub: "Apt. Centrum · Aktywny", delay: 0.25 },
+                { icon: SprayCan, color: "#F59E0B", title: "Auto-Cleaning", detail: "Sprzątanie · Apt. Centrum", sub: "W trakcie — 60%", delay: 0.4 },
+              ].map((card, i) => {
+                const cardProgress = Math.max(0, (p4 - card.delay) / (1 - card.delay));
+                return (
+                  <div key={i} className="glass rounded-2xl p-4"
+                    style={{
+                      opacity: Math.min(1, cardProgress * 3),
+                      transform: `translateX(${(1 - Math.min(1, cardProgress * 2)) * 60}px)`,
+                    }}>
+                    <div className="flex items-center gap-2.5 mb-2">
+                      <card.icon className="w-4 h-4" style={{ color: card.color }} />
+                      <span className="text-xs font-semibold text-zinc-400">{card.title}</span>
+                    </div>
+                    <p className="text-sm font-medium text-white mb-0.5">{card.detail}</p>
+                    <p className="text-xs text-zinc-500">{card.sub}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Phase 4 bottom text — keep inside phase 4 container */}
+          <div className="absolute bottom-16 left-0 right-0 text-center">
+            <h2 className="text-2xl md:text-5xl font-black tracking-tight text-white"
+              style={{ opacity: Math.min(1, p4 * 2) * (1 - Math.max(0, (p4 - 0.85) / 0.15)) }}>
+              Wszystko dzieje się <span className="gradient-text">samo.</span>
+            </h2>
+          </div>
         </div>
 
         {/* ── Phase 5: Empire / Buildings ── */}
@@ -543,10 +546,10 @@ function SocialProof() {
         {/* Live stats — rich cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { target: 12847, label: "Rezerwacji obsłużonych", sublabel: "przez PropertyPMS", icon: Calendar, interval: 5000, accent: "#6366F1", accentBg: "rgba(99,102,241,0.08)", bars: [4,6,5,7,8,7,9,11,10,12], trend: "+8%" },
-            { target: 48293, label: "Wiadomości AI", sublabel: "odpowiedź w <1s", icon: MessageCircle, interval: 1000, accent: "#06D6A0", accentBg: "rgba(6,214,160,0.08)", bars: [6,8,9,10,12,14,15,16,18,20], trend: "+24%" },
-            { target: 9412, label: "Auto Check-inów", sublabel: "bez klucza fizycznego", icon: DoorOpen, interval: 3000, accent: "#818CF8", accentBg: "rgba(129,140,248,0.08)", bars: [3,4,5,4,6,7,6,8,9,10], trend: "+15%" },
-            { target: 6738, label: "Sprzątań zleconych", sublabel: "automatycznie po CO", icon: SprayCan, interval: 2500, accent: "#F59E0B", accentBg: "rgba(245,158,11,0.08)", bars: [2,3,4,3,5,4,6,7,6,8], trend: "+12%" },
+            { target: 12847, label: "Rezerwacji obsłużonych", sublabel: "przez PropertyPMS", icon: Calendar, interval: 5000, accent: "#6366F1", accentBg: "rgba(99,102,241,0.08)", bars: [3,4,5,5,7,8,10,13,16,18,22,28,34,40,48], trend: "+38%", milestone: "10K+", milestoneIdx: 10 },
+            { target: 48293, label: "Wiadomości AI", sublabel: "odpowiedź w <1s", icon: MessageCircle, interval: 1000, accent: "#06D6A0", accentBg: "rgba(6,214,160,0.08)", bars: [5,6,8,9,12,14,18,22,26,30,36,42,50,60,72], trend: "+124%", milestone: "50K+", milestoneIdx: 12 },
+            { target: 9412, label: "Auto Check-inów", sublabel: "bez klucza fizycznego", icon: DoorOpen, interval: 3000, accent: "#818CF8", accentBg: "rgba(129,140,248,0.08)", bars: [2,3,3,4,5,6,8,10,12,15,18,22,26,30,36], trend: "+65%", milestone: "5K+", milestoneIdx: 8 },
+            { target: 6738, label: "Sprzątań zleconych", sublabel: "automatycznie po CO", icon: SprayCan, interval: 2500, accent: "#F59E0B", accentBg: "rgba(245,158,11,0.08)", bars: [2,2,3,4,5,6,8,9,12,14,17,20,24,28,34], trend: "+52%", milestone: "1K+", milestoneIdx: 6 },
           ].map((stat) => (
             <LiveStatCard key={stat.label} {...stat} />
           ))}
@@ -556,11 +559,11 @@ function SocialProof() {
   );
 }
 
-function LiveStatCard({ target, label, sublabel, icon: Icon, interval, accent, accentBg, bars, trend }: {
+function LiveStatCard({ target, label, sublabel, icon: Icon, interval, accent, accentBg, bars, trend, milestone, milestoneIdx }: {
   target: number; label: string; sublabel: string;
   icon: React.ComponentType<{ className?: string }>;
   interval: number; accent: string; accentBg: string;
-  bars: number[]; trend: string;
+  bars: number[]; trend: string; milestone: string; milestoneIdx: number;
 }) {
   const { count, ref } = useLiveCounter(target, interval);
   const maxBar = Math.max(...bars);
@@ -583,20 +586,46 @@ function LiveStatCard({ target, label, sublabel, icon: Icon, interval, accent, a
       <p className="text-[11px] font-semibold text-white/80 mb-0.5">{label}</p>
       <p className="text-[10px] text-zinc-500 mb-4">{sublabel}</p>
 
-      {/* Mini bar chart */}
-      <div className="flex items-end gap-[3px] h-8">
-        {bars.map((h, i) => (
-          <div key={i} className="flex-1 rounded-sm transition-all" style={{
-            height: `${(h / maxBar) * 100}%`,
-            backgroundColor: i === bars.length - 1 ? accent : `${accent}55`,
-          }} />
-        ))}
+      {/* Enhanced bar chart with milestone + dashed avg line */}
+      <div className="relative">
+        {/* Dashed average line */}
+        <div className="absolute left-0 right-0 border-t border-dashed border-white/10" style={{ bottom: "40%" }} />
+
+        <div className="flex items-end gap-[2px] h-12 relative">
+          {bars.map((h, i) => {
+            const pct = (h / maxBar) * 100;
+            const isLast3 = i >= bars.length - 3;
+            const isMilestone = i === milestoneIdx;
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center relative">
+                {isMilestone && (
+                  <span className="absolute -top-4 text-[7px] font-black whitespace-nowrap" style={{ color: accent }}>{milestone}</span>
+                )}
+                <div className="w-full rounded-sm" style={{
+                  height: `${pct}%`,
+                  background: isLast3
+                    ? `linear-gradient(180deg, ${accent} 0%, ${accent}88 100%)`
+                    : i > bars.length - 6
+                    ? `${accent}88`
+                    : `${accent}33`,
+                  boxShadow: isLast3 ? `0 0 8px ${accent}44` : "none",
+                }} />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Period labels */}
+        <div className="flex justify-between mt-1">
+          <span className="text-[7px] text-zinc-600">sty</span>
+          <span className="text-[7px] text-zinc-600">mar</span>
+        </div>
       </div>
 
       {/* Trend */}
-      <div className="flex items-center gap-1 mt-2">
+      <div className="flex items-center gap-1 mt-1.5">
         <TrendingUp className="w-3 h-3" style={{ color: accent }} />
-        <span className="text-[10px] font-bold" style={{ color: accent }}>{trend} vs zeszły miesiąc</span>
+        <span className="text-[10px] font-bold" style={{ color: accent }}>{trend} vs Q4</span>
       </div>
     </div>
   );
