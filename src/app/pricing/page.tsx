@@ -360,37 +360,40 @@ function PricingSection() {
         </div>
 
         {/* Single morphing container: cards → table */}
-        <div className={`rounded-2xl border border-white/[0.06] overflow-hidden transition-all duration-500 ${expanded ? "bg-white/[0.02]" : ""}`}>
+        <div className="rounded-2xl border border-white/[0.06] transition-all duration-500">
 
           {/* Plan headers — always visible, morph from cards to table columns */}
-          <div className="grid grid-cols-1 md:grid-cols-3 transition-all duration-500">
-            {plans.map((plan) => (
+          <div className={`grid grid-cols-1 md:grid-cols-3 transition-all duration-500 ${expanded ? "" : "gap-0"}`}>
+            {plans.map((plan, idx) => (
               <div key={plan.name}
                 className={`relative transition-all duration-500 ${
                   expanded
-                    ? `p-5 text-center ${plan.highlight ? "bg-indigo-500/10 border-b border-indigo-500/20" : "border-b border-white/[0.04]"}`
-                    : `p-7 ${plan.highlight ? "bg-white/[0.06]" : "bg-white/[0.03]"} ${!expanded ? "border-b md:border-b-0 md:border-r border-white/[0.04] last:border-r-0" : ""}`
+                    ? `p-4 md:p-5 text-center ${plan.highlight ? "bg-indigo-500/10" : ""} ${idx < 2 ? "border-b md:border-b-0 md:border-r border-white/[0.06]" : ""}`
+                    : `p-6 md:p-7 ${plan.highlight ? "bg-white/[0.06]" : "bg-white/[0.03]"} ${idx < 2 ? "border-b md:border-b-0 md:border-r border-white/[0.06]" : ""}`
                 }`}>
+                {/* Badge — inside the card with margin, not absolute */}
                 {plan.highlight && !expanded && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg z-10">
-                    Najpopularniejszy
+                  <div className="flex justify-center mb-4 -mt-1">
+                    <span className="bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg">
+                      Najpopularniejszy
+                    </span>
                   </div>
                 )}
 
                 <h3 className={`font-bold text-white transition-all duration-500 ${expanded ? "text-sm mb-1" : "text-base mb-0.5"}`}>{plan.name}</h3>
-                <p className={`text-xs text-zinc-500 transition-all duration-500 ${expanded ? "mb-2" : "mb-4"}`}>{plan.desc}</p>
-                <div className="flex items-baseline gap-1 justify-center md:justify-start transition-all duration-500" style={{ justifyContent: expanded ? "center" : undefined }}>
-                  <span className={`font-black text-white transition-all duration-500 ${expanded ? "text-2xl" : "text-4xl"}`}>{plan.price}</span>
+                <p className={`text-xs text-zinc-500 transition-all duration-500 ${expanded ? "hidden md:block mb-1" : "mb-3"}`}>{plan.desc}</p>
+                <div className={`flex items-baseline gap-1 transition-all duration-500 ${expanded ? "justify-center" : "justify-center md:justify-start"}`}>
+                  <span className={`font-black text-white transition-all duration-500 ${expanded ? "text-xl md:text-2xl" : "text-3xl md:text-4xl"}`}>{plan.price}</span>
                   <span className="text-sm text-zinc-400">{plan.period}</span>
                 </div>
 
-                <a href={plan.stripeUrl} className={`block text-center font-bold text-sm py-2.5 rounded-xl transition-all duration-500 mt-4 ${plan.ctaStyle}`}>
+                <a href={plan.stripeUrl} className={`block text-center font-bold text-sm py-2.5 rounded-xl transition-all duration-500 mt-3 ${plan.ctaStyle}`}>
                   {plan.cta}
                 </a>
 
                 {/* Feature list — visible only when collapsed */}
                 <div className={`transition-all duration-500 overflow-hidden ${expanded ? "max-h-0 opacity-0 mt-0" : "max-h-[600px] opacity-100 mt-5"}`}>
-                  <ul className="space-y-2.5">
+                  <ul className="space-y-2">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-[12px] text-zinc-300">
                         <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.highlight ? "text-indigo-400" : "text-emerald-400"}`} />
@@ -415,28 +418,33 @@ function PricingSection() {
             className="overflow-hidden transition-[max-height] duration-700 ease-in-out"
             style={{ maxHeight: 0 }}
           >
-            {comparisonRows.map((cat) => (
-              <div key={cat.category}>
-                <div className="grid grid-cols-4 bg-white/[0.015] border-b border-white/[0.04]">
-                  <div className="col-span-4 px-4 py-2">
-                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{cat.category}</span>
-                  </div>
-                </div>
-                {cat.features.map((row) => (
-                  <div key={row.name} className="grid grid-cols-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
-                    <div className="px-4 py-3 flex items-center gap-2">
-                      <span className="text-[12px] text-zinc-400">{row.name}</span>
-                      {row.soon && <span className="text-[8px] font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded-full">Wkrótce</span>}
+            {/* Mobile: scrollable table */}
+            <div className="overflow-x-auto">
+              <div className="min-w-[600px]">
+                {comparisonRows.map((cat) => (
+                  <div key={cat.category}>
+                    <div className="grid grid-cols-4 bg-white/[0.015] border-b border-white/[0.04]">
+                      <div className="col-span-4 px-4 py-2">
+                        <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{cat.category}</span>
+                      </div>
                     </div>
-                    {[row.starter, row.pro, row.enterprise].map((v, i) => (
-                      <div key={i} className={`px-4 py-3 flex items-center justify-center ${i === 1 ? "bg-indigo-500/5 border-l border-r border-indigo-500/10" : ""}`}>
-                        {v ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-3.5 h-3.5 text-zinc-700" />}
+                    {cat.features.map((row) => (
+                      <div key={row.name} className="grid grid-cols-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                        <div className="px-4 py-3 flex items-center gap-2">
+                          <span className="text-[12px] text-zinc-400">{row.name}</span>
+                          {row.soon && <span className="text-[8px] font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded-full">Wkrótce</span>}
+                        </div>
+                        {[row.starter, row.pro, row.enterprise].map((v, i) => (
+                          <div key={i} className={`px-4 py-3 flex items-center justify-center ${i === 1 ? "bg-indigo-500/5 border-l border-r border-indigo-500/10" : ""}`}>
+                            {v ? <Check className="w-4 h-4 text-emerald-400" /> : <X className="w-3.5 h-3.5 text-zinc-700" />}
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </div>
                 ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
