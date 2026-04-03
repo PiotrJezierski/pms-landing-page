@@ -165,7 +165,7 @@ function FeaturesGrid() {
             ))}
           </div>
           <p className="text-center text-sm text-zinc-600">
-            …i wiele więcej. IoT Dashboard, Email Marketing, Digital Contracts, Predictive Maintenance i kolejne integracje już w planach.
+            …i wiele więcej.
           </p>
         </div>
       </div>
