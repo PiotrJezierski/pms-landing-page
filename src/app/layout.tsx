@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import CookieBanner from "@/components/CookieBanner";
 import "./globals.css";
 
 const inter = Inter({
@@ -93,6 +94,7 @@ export default function RootLayout({
           }}
         />
         {children}
+        <CookieBanner />
 
         {/* ── Analytics ── */}
         {/* TODO: Replace GTM-XXXXXX with your GTM container ID and change false → true */}
